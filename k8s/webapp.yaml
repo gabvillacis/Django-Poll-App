@@ -24,7 +24,7 @@ kind: Deployment
 metadata:
   name: djangopolls
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: djangopolls
@@ -42,6 +42,13 @@ spec:
         envFrom:
         - configMapRef:
             name: djangopolls-config
+        resources:
+          requests: 
+            memory: "256Mi" # Solicita esta cantidad de memoria
+            cpu: "500m" # Solicita esta cantidad de CPU (0.5vcpu)
+          limits:
+            memory: "512Mi" # Limita a esta cantidad de memoria
+            cpu: "1" # Limita a esta cantidad de CPU (1vcpu)
         command: ["/bin/sh", "-c", "python manage.py migrate && python create_superuser.py && gunicorn --bind 0.0.0.0:8000 pollme.wsgi:application"]
 
 ---
